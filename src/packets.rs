@@ -23,7 +23,6 @@ impl<T, const N: usize> std::ops::DerefMut for Packet<T, N> {
 }
 
 
-
 impl<T: Copy, const N: usize> Packet<T, N> {
     
     #[inline(always)]
