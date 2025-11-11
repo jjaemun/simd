@@ -1,13 +1,21 @@
-#![feature(portable_simd)]
+use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
 
 
 #[derive(Clone, Copy, Debug)]
-pub struct Packet<T, const N: usize> {
+pub struct Packet<T, const N: usize> 
+    where
+        T: SimdElement,
+        LaneCount<N>: SupportedLaneCount,
+{
     pub v: Simd<T, N>,
 }
 
 
-impl<T, const N: usize> std::ops::Deref for Packet<T, N> {
+impl<T, const N: usize> std::ops::Deref for Packet<T, N> 
+    where
+        T: SimdElement,
+        LaneCount<N>: SupportedLaneCount,
+{
     type Target = Simd<T, N>;
     fn deref(&self) -> &Self::Target {
         &self.v
@@ -15,15 +23,22 @@ impl<T, const N: usize> std::ops::Deref for Packet<T, N> {
 }
 
 
-impl<T, const N: usize> std::ops::DerefMut for Packet<T, N> {
-    type Target = Simd<T, N>;
+impl<T, const N: usize> std::ops::DerefMut for Packet<T, N> 
+    where
+        T: SimdElement,
+        LaneCount<N>: SupportedLaneCount,
+{
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.v
     }
 }
 
 
-impl<T: Copy, const N: usize> Packet<T, N> {
+impl<T: Copy, const N: usize> Packet<T, N> 
+    where
+        T: SimdElement,
+        LaneCount<N>: SupportedLaneCount,
+{
     
     #[inline(always)]
     pub fn new(v: [T; N]) -> Self {
