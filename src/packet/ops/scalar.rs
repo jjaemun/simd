@@ -133,7 +133,6 @@ macro_rules! scalar {
                     fn $call
                 }
             }
-        
         )*  
     }
 }
