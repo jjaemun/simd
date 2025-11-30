@@ -5,55 +5,68 @@ use crate::packet::Packet;
 
 
 macro_rules! binary {
-    (
-        impl $trait:ident::$call:ident {
-            $op: tt
-        }
-        $($rest:tt)*
-    ) => {
-        impl<T, const N: usize> $trait<Self> for Packet<T, N>
-        where 
-            T: SimdElement,
-            LaneCount<N>: SupportedLaneCount,
-            Simd<T, N>: $trait<Output = Simd<T, N>>,
-        {
-            type Output = Packet<T, N>;
-        
-            #[inline]
-            fn $call(self, rhs: Packet<T, N>) -> Self::Output {
-                Packet {
-                    v: self.v $op rhs.v 
+    ($(impl<T, const N: usize> $trait:ident for $packet:ty {
+            fn $call:ident
+        })*) => {
+        $(
+            impl<T, const N: usize> $trait<Self> for Packet<T, N>
+            where 
+                T: SimdElement,
+                LaneCount<N>: SupportedLaneCount,
+                Simd<T, N>: $trait<Output = Simd<T, N>>,
+            {
+                type Output = Packet<T, N>;
+            
+                #[inline]
+                fn $call(self, rhs: Packet<T, N>) -> Self::Output {
+                    Packet {
+                        v: self.v.$call(rhs.v) 
+                    }
                 }
             }
-        }
-        
-        operations! {
-            $($rest)*
-        }
+        )*
     };
-    ($($done:tt)*) => { 
-        // Done.
-    }
 }
-       
+      
+
 binary! {
-    impl Add::add { + }
+    impl<T, const N: usize> Add for Packet<T, N> {
+        fn add
+    }
 
-    impl Sub::sub { - }
+    impl<T, const N: usize> Mul for Packet<T, N> {
+        fn mul
+    }
 
-    impl Mul::mul { * }
+    impl<T, const N: usize> Sub for Packet<T, N> {
+        fn sub
+    }
 
-    impl Div::div { / }
+    impl<T, const N: usize> Div for Packet<T, N> {
+        fn div
+    }
 
-    impl Rem::rem { % }
+    impl<T, const N: usize> Rem for Packet<T, N> {
+        fn rem
+    }
 
-    impl BitAnd::bitand { & }
+    impl<T, const N: usize> BitAnd for Packet<T, N> {
+        fn bitand
+    }
 
-    impl BitOr::bitor { | }
+    impl<T, const N: usize> BitOr for Packet<T, N> {
+        fn bitor
+    }
 
-    impl BitXor::bitxor { ^ }
+    impl<T, const N: usize> BitXor for Packet<T, N> {
+        fn bitxor
+    }
 
-    impl Shl::shl { << }
+    impl<T, const N: usize> Shl for Packet<T, N> {
+        fn shl
+    }
 
-    impl Shr::shr { >> }
+    impl<T, const N: usize> Shr for Packet<T, N> {
+        fn shr
+    }
 }
