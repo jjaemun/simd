@@ -4,12 +4,14 @@ use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
 use crate::packet::Packet;
 
 
-macro_rules! operation {
+macro_rules! operations {
     (
         impl $trait:ident::$call:ident {
             $op: tt
         }
+        $($rest:tt)*
     ) => {
+
         impl<T, const N: usize> $trait<Self> for Packet<T, N>
         where 
             T: SimdElement,
@@ -25,23 +27,8 @@ macro_rules! operation {
                 }
             }
         }
-    };
-}
 
-macro_rules! packet_operations {
-    (
-        impl $trait:ident::$call:ident {
-            $op: tt
-        }
-        $($rest:tt)*
-    ) => {
-        operation! {
-            impl $trait::$call {
-                $op
-            }
-        }
-
-        packet_operations! {
+        operations! {
             $($rest)*
         }
 
@@ -51,7 +38,7 @@ macro_rules! packet_operations {
     }
 }
        
-packet_operations! {
+operations! {
 
     impl Add::add { + }
 
