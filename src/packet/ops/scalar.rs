@@ -139,7 +139,6 @@ macro_rules! scalar {
 }
 
 
-
 scalar! {
     impl<T, const N: usize> Add for Packet<T, N> {
         fn add
