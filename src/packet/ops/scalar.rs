@@ -6,29 +6,26 @@ use crate::packet::Packet;
 
 
 macro_rules! binary {
-    ($(impl<T, const N: usize> $trait:ident for $packet:ty {
+    (impl<T, const N: usize> $trait:ident for $packet:ty {
             fn $call:ident 
-        })*) => {
-        $(
-            impl<T, const N: usize> $trait<T> for Packet<T, N>
-            where
-                T: SimdElement,
-                LaneCount<N>: SupportedLaneCount,
-                Simd<T, N>: $trait<Simd<T, N>, Output = Simd<T, N>>,
-            {
-                type Output = Packet<T, N>;
+        }) => {
+        impl<T, const N: usize> $trait<T> for Packet<T, N>
+        where
+            T: SimdElement,
+            LaneCount<N>: SupportedLaneCount,
+            Simd<T, N>: $trait<Simd<T, N>, Output = Simd<T, N>>,
+        {
+            type Output = Packet<T, N>;
 
-                #[inline]
-                fn $call(self, rhs: T) -> Self::Output {
-                    Packet {
-                        v: self.v.$call(Self::splat(rhs).v)
-                    }
+            #[inline]
+            fn $call(self, rhs: T) -> Self::Output {
+                Packet {
+                    v: self.v.$call(Self::splat(rhs).v)
                 }
             }
-        )*
+        }
     };
 }
-
     
 macro_rules! lhs {
     (impl<T, const N: usize> $trait:ident for $packet:ty {
@@ -97,75 +94,53 @@ macro_rules! both {
 }
 
 macro_rules! derefs {
+    (impl<T, const N: usize> $trait:ident for $packet:ty {
+            fn $call:ident
+        }) => {
+        lhs! {
+            impl<T, const N: usize> $trait for $packet {
+                fn $call
+            }
+        }
+
+        rhs! {
+            impl<T, const N: usize> $trait for $packet {
+                fn $call
+            }
+        }
+    
+        both! {
+            impl<T, const N: usize> $trait for $packet {
+                fn $call
+            }
+        }
+    }
+}
+
+macro_rules! scalar {
     ($(impl<T, const N: usize> $trait:ident for $packet:ty {
             fn $call:ident
         })*) => {
         $(
-            lhs! {
+            binary! {
                 impl<T, const N: usize> $trait for $packet {
                     fn $call
                 }
             }
 
-            rhs! {
+            derefs! {
                 impl<T, const N: usize> $trait for $packet {
                     fn $call
                 }
             }
         
-            both! {
-                impl<T, const N: usize> $trait for $packet {
-                    fn $call
-                }
-            }
-        )*
-    }
-}    
-
-binary! {
-    impl<T, const N: usize> Add for Packet<T, N> {
-        fn add
-    }
-
-    impl<T, const N: usize> Mul for Packet<T, N> {
-        fn mul
-    }
-
-    impl<T, const N: usize> Sub for Packet<T, N> {
-        fn sub
-    }
-
-    impl<T, const N: usize> Div for Packet<T, N> {
-        fn div
-    }
-
-    impl<T, const N: usize> Rem for Packet<T, N> {
-        fn rem
-    }
-
-    impl<T, const N: usize> BitAnd for Packet<T, N> {
-        fn bitand
-    }
-
-    impl<T, const N: usize> BitOr for Packet<T, N> {
-        fn bitor
-    }
-
-    impl<T, const N: usize> BitXor for Packet<T, N> {
-        fn bitxor
-    }
-
-    impl<T, const N: usize> Shl for Packet<T, N> {
-        fn shl
-    }
-
-    impl<T, const N: usize> Shr for Packet<T, N> {
-        fn shr
+        )*  
     }
 }
 
 
-derefs! {
+
+scalar! {
     impl<T, const N: usize> Add for Packet<T, N> {
         fn add
     }
