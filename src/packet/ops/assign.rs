@@ -73,7 +73,6 @@ assign! {
         }
     }
 
-    // Bitops
     impl<T, U, const N: usize> BitAndAssign<U> for Packet<T, N>
     where
         Self: BitAnd,
