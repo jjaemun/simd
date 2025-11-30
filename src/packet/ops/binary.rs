@@ -39,7 +39,6 @@ macro_rules! operations {
 }
        
 operations! {
-
     impl Add::add { + }
 
     impl Sub::sub { - }
