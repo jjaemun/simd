@@ -48,10 +48,6 @@ macro_rules! rhs {
     };
 }
 
-
-
-
-
 macro_rules! both {
     (impl<T, const N: usize> $trait:ident for $packet:ty {
             fn $call:ident
