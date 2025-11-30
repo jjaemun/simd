@@ -18,11 +18,11 @@ macro_rules! assign {
         where
             T: SimdElement,
             LaneCount<N>: SupportedLaneCount,
-            Simd<T, N>: $trait<U, Output = Simd<T, N>>,
+            Packet<T, N>: $trait<U, Output = Packet<T, N>>,
         {
             #[inline]
             fn $assign_call(&mut self, rhs: U) {
-                (*self).v = (*self).v.$call(rhs);
+                *self = (*self).$call(rhs);
             }
         })*
     }
