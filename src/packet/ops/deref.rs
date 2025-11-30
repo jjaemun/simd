@@ -4,7 +4,7 @@ use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
 use crate::packet::Packet;
 
 
-macro_rules! deref_lhs {
+macro_rules! lhs {
     (impl<T, const N: usize> $trait:ident for $packet:ty {
             fn $call:ident
         }) => {
@@ -26,7 +26,7 @@ macro_rules! deref_lhs {
     };
 }
 
-macro_rules! deref_rhs {
+macro_rules! rhs {
     (impl<T, const N: usize> $trait:ident for $packet:ty {
             fn $call:ident
         }) => {
@@ -48,40 +48,57 @@ macro_rules! deref_rhs {
     };
 }
 
+
+
+
+
+macro_rules! both {
+    (impl<T, const N: usize> $trait:ident for $packet:ty {
+            fn $call:ident
+        }) => {
+        impl<'a, 'b, T, const N: usize> $trait<&'b $packet> for &'a $packet
+        where
+            T: SimdElement,
+            LaneCount<N>: SupportedLaneCount,
+            Simd<T, N>: $trait<Simd<T, N>, Output = Simd<T, N>>,
+        {
+            type Output = Packet<T, N>;
+
+            #[inline]
+            fn $call(self, rhs: &'b $packet) -> $packet {
+                Packet {
+                    v: (*self).v.$call((*rhs).v)
+                }
+            }
+        }
+    };
+}
+
 macro_rules! derefs {
     ($(impl<T, const N: usize> $trait:ident for $packet:ty {
             fn $call:ident
         })*) => {
         $(
-            deref_lhs! {
+            lhs! {
                 impl<T, const N: usize> $trait for $packet {
                     fn $call
                 }
             }
 
-            deref_rhs! {
+            rhs! {
                 impl<T, const N: usize> $trait for $packet {
                     fn $call
                 }
             }
-
-            impl<'a, 'b, T, const N: usize> $trait<&'b $packet> for &'a $packet
-            where
-                T: SimdElement,
-                LaneCount<N>: SupportedLaneCount,
-                Simd<T, N>: $trait<Simd<T, N>, Output = Simd<T, N>>,
-            {
-                type Output = Packet<T, N>;
-
-                #[inline]
-                fn $call(self, rhs: &'b $packet) -> $packet {
-                    Packet {
-                        v: (*self).v.$call((*rhs).v)
-                    }
+        
+            both! {
+                impl<T, const N: usize> $trait for $packet {
+                    fn $call
                 }
             }
         )*
     }
+
 }
 
 
