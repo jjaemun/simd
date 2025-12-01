@@ -68,14 +68,31 @@ impl<T, const N: usize> Packet<T, N>
 }
 
 
-macro_rules! declare_packet {
-    ($name:ident, $n: expr) => {
-        pub type $name<T> = Packet<T, $n>;
+macro_rules! packets {
+    ($(pub struct $name:ident<T: SimdElement> {
+            LANES: $n:expr
+        })*) => {
+        $(
+            pub type $name<T> = Packet<T, $n>;
+        )*
     };
 }
 
 
-declare_packet!(Packet2, 2);
-declare_packet!(Packet4, 4);
-declare_packet!(Packet8, 8);
-declare_packet!(Packet16, 16);
+packets! {
+    pub struct Packet2<T: SimdElement> {
+        LANES: 2
+    }
+
+    pub struct Packet4<T: SimdElement> {
+        LANES: 4
+    }
+
+    pub struct Packet8<T: SimdElement> {
+        LANES: 8
+    }
+
+    pub struct Packet16<T: SimdElement> {
+        LANES: 16
+    }
+}
