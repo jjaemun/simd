@@ -22,10 +22,10 @@ impl<T, const N: usize> Packet<T, N>
         Self::LEN
     }
     
-    #[inline(always)]
+    #[inline]
     pub fn splat(v: T) -> Self {
         Self { 
-            v: std::simd::Simd::splat(v)
+            v: Simd::splat(v)
         }
     }
 
@@ -35,14 +35,14 @@ impl<T, const N: usize> Packet<T, N>
     }
 
     #[inline]
-    pub const fn as_mut_array(&self) -> &mut [T; N] {
-        self.v.as_mut_array()
+    pub fn as_mut_array(&mut self) -> &mut [T; N] {
+        (*self).v.as_mut_array()
     }
 
     #[inline]
     pub fn from_array(array: [T; N]) -> Self {
         Self { 
-            v: std::simd::Simd::from_array(array) 
+            v: Simd::from_array(array) 
         }
     }
 
@@ -62,7 +62,7 @@ impl<T, const N: usize> Packet<T, N>
    
     #[inline]
     #[track_caller]
-    pub const fn copy_to_slice(self, slice: mut& [T]) {
+    pub fn copy_to_slice(self, slice: &mut [T]) {
         self.v.copy_to_slice(slice)
     }
 }
