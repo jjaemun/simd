@@ -10,41 +10,16 @@ pub struct Packet<T, const N: usize>
     pub v: Simd<T, N>,
 }
 
-
-impl<T, const N: usize> std::ops::Deref for Packet<T, N> 
+impl<T, const N: usize> Packet<T, N> 
     where
         T: SimdElement,
         LaneCount<N>: SupportedLaneCount,
 {
-    type Target = Simd<T, N>;
-    fn deref(&self) -> &Self::Target {
-        &self.v
-    }
-}
+    pub const LEN: usize = N;
 
-
-impl<T, const N: usize> std::ops::DerefMut for Packet<T, N> 
-    where
-        T: SimdElement,
-        LaneCount<N>: SupportedLaneCount,
-{
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.v
-    }
-}
-
-
-impl<T: Copy, const N: usize> Packet<T, N> 
-    where
-        T: SimdElement,
-        LaneCount<N>: SupportedLaneCount,
-{
-    
-    #[inline(always)]
-    pub fn new(v: [T; N]) -> Self {
-        Self { 
-            v: std::simd::Simd::from_array(v) 
-        }
+    #[inline]
+    pub const fn len(&self) -> usize {
+        Self::LEN
     }
     
     #[inline(always)]
@@ -52,6 +27,43 @@ impl<T: Copy, const N: usize> Packet<T, N>
         Self { 
             v: std::simd::Simd::splat(v)
         }
+    }
+
+    #[inline]
+    pub const fn as_array(&self) -> &[T; N] {
+        self.v.as_array()
+    }
+
+    #[inline]
+    pub const fn as_mut_array(&self) -> &mut [T; N] {
+        self.v.as_mut_array()
+    }
+
+    #[inline]
+    pub fn from_array(array: [T; N]) -> Self {
+        Self { 
+            v: std::simd::Simd::from_array(array) 
+        }
+    }
+
+    #[inline]
+    pub fn to_array(self) -> [T; N] {
+        self.v.to_array()
+    }
+    
+    #[must_use]
+    #[inline]
+    #[track_caller]
+    pub const fn from_slice(slice: &[T]) -> Self {
+        Self {
+            v: std::simd::Simd::from_slice(slice)
+        }
+    }
+   
+    #[inline]
+    #[track_caller]
+    pub const fn copy_to_slice(self, slice: mut& [T]) {
+        self.v.copy_to_slice(slice)
     }
 }
 
