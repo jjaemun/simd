@@ -23,6 +23,7 @@ impl<T, const N: usize> Packet<T, N>
     }
     
     #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
     pub fn splat(v: T) -> Self {
         Self { 
             v: Simd::splat(v)
@@ -30,16 +31,19 @@ impl<T, const N: usize> Packet<T, N>
     }
 
     #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
     pub const fn as_array(&self) -> &[T; N] {
         self.v.as_array()
     }
 
     #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
     pub fn as_mut_array(&mut self) -> &mut [T; N] {
-        (*self).v.as_mut_array()
+        self.v.as_mut_array()
     }
 
     #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
     pub fn from_array(array: [T; N]) -> Self {
         Self { 
             v: Simd::from_array(array) 
@@ -47,13 +51,29 @@ impl<T, const N: usize> Packet<T, N>
     }
 
     #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
     pub fn to_array(self) -> [T; N] {
         self.v.to_array()
     }
+
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn from_simd(simd: Simd<T, N>) -> Self {
+        Self { 
+            v: simd
+        }
+    }
+
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn to_simd(self) -> Simd<T, N> {
+        self.v
+    }
+
     
     #[must_use]
     #[inline]
-    #[track_caller]
+    #[cfg_attr(debug_assertions, track_caller)]
     pub const fn from_slice(slice: &[T]) -> Self {
         Self {
             v: std::simd::Simd::from_slice(slice)
@@ -61,7 +81,7 @@ impl<T, const N: usize> Packet<T, N>
     }
    
     #[inline]
-    #[track_caller]
+    #[cfg_attr(debug_assertions, track_caller)]
     pub fn copy_to_slice(self, slice: &mut [T]) {
         self.v.copy_to_slice(slice)
     }
