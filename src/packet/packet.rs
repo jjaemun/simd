@@ -1,6 +1,6 @@
 use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
 
-
+#[repr(transparent)]
 pub struct Packet<T, const N: usize> 
     where
         T: SimdElement,
