@@ -1,6 +1,5 @@
 use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
 use std::hash::{Hash, Hasher};
-use std::cmp::Ordering;
 
 
 pub struct Packet<T, const N: usize> 
@@ -160,11 +159,142 @@ where
     LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: Ord,
 {
+    #[inline]
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.v.cmp(&other.v)
     }
 }
 
+impl<T, const N: usize> Hash for Packet<T, N>
+where
+    T: SimdElement + Hash,
+    LaneCount<N>: SupportedLaneCount,
+    Simd<T, N>: Hash,
+{
+    #[inline]
+    fn hash<H>(&self, state: &mut H) 
+    where 
+        H: Hasher
+    {
+        self.as_array().hash(state)
+    }
+}
+
+impl<T, const N: usize> AsRef<[T; N]> for Packet<T, N>
+where
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    #[inline]
+    fn as_ref(&self) -> &[T; N] {
+        self.as_array()
+    }
+}
+
+impl<T, const N: usize> AsMut<[T; N]> for Packet<T, N>
+where
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    #[inline]
+    fn as_mut(&mut self) -> &mut [T; N] {
+        self.as_mut_array()
+    }
+}
+
+impl<T, const N: usize> AsRef<[T]> for Packet<T, N>
+where
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    #[inline]
+    fn as_ref(&self) -> &[T] {
+        self.as_array()
+    }
+}
+
+impl<T, const N: usize> AsMut<[T]> for Packet<T, N>
+where
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    #[inline]
+    fn as_mut(&mut self) -> &mut [T] {
+        self.as_mut_array()
+    }
+}
+
+impl<T, const N: usize> From<[T; N]> for Packet<T, N>
+where
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    #[inline]
+    fn from(array: [T; N]) -> Self {
+        Self::from_array(array)
+    }
+}
+
+impl<T, const N: usize> From<Simd<T, N>> for Packet<T, N>
+where
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    #[inline]
+    fn from(simd: Simd<T, N>) -> Self {
+        Self::from_simd(simd)
+    }
+}
+
+impl<T, const N: usize> From<Packet<T, N>> for [T; N]
+where
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    #[inline]
+    fn from(packet: Packet<T, N>) -> Self {
+        packet.to_array()
+    }
+}
+
+impl<T, const N: usize> From<Packet<T, N>> for Simd<T, N>
+where
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    #[inline]
+    fn from(packet: Packet<T, N>) -> Self {
+        packet.to_simd()
+    }
+}
+
+use std::convert::TryFrom;
+
+impl<T, const N: usize> TryFrom<&[T]> for Packet<T, N>
+where
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    type Error = core::array::TryFromSliceError;
+
+    #[inline]
+    fn try_from(slice: &[T]) -> Result<Self, Self::Error> {
+        Ok(Self::from_array(slice.try_into()?))
+    }
+}
+
+impl<T, const N: usize> TryFrom<&mut [T]> for Packet<T, N>
+where
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    type Error = core::array::TryFromSliceError;
+
+    #[inline]
+    fn try_from(slice: &mut [T]) -> Result<Self, Self::Error> {
+        Ok(Self::from_array(slice.try_into()?))
+    }
+}
 
 macro_rules! packets {
     ($(pub struct $name:ident<T: SimdElement> {
