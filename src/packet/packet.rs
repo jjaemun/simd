@@ -1,7 +1,8 @@
 use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
+use std::hash::{Hash, Hasher};
+use std::cmp::Ordering;
 
 
-#[derive(Clone, Copy, Debug)]
 pub struct Packet<T, const N: usize> 
     where
         T: SimdElement,
@@ -86,6 +87,54 @@ impl<T, const N: usize> Packet<T, N>
         self.v.copy_to_slice(slice)
     }
 }
+
+
+impl<T, const N: usize> Copy for Packet<T, N> 
+where 
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{}
+
+impl<T, const N: usize> Clone for Packet<T, N> 
+where 
+    T: SimdElement,
+    LaneCount<N>: SupportedLaneCount,
+{
+    #[inline]
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+impl<T, const N: usize> Default for Packet<T, N> 
+where 
+    T: SimdElement + Default,
+    LaneCount<N>: SupportedLaneCount,
+{
+    #[inline]
+    fn default() -> Self {
+        Self::splat(T::default())
+    }
+}
+
+impl<T, const N: usize> PartialEq for Packet<T, N>
+where
+    T: SimdElement + PartialEq,
+    LaneCount<N>: SupportedLaneCount,
+    Simd<T, N>: PartialEq,
+{
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        self.v.eq(&other.v)
+    }
+
+    #[inline]
+    #[allow(clippy::partialeq_ne_impl)]
+    fn ne(&self, other: &Self) -> bool {
+        self.v.ne(&other.v)
+    }
+}
+
 
 
 macro_rules! packets {
