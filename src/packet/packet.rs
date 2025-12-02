@@ -81,7 +81,7 @@ impl<T, const N: usize> Packet<T, N>
     #[cfg_attr(debug_assertions, track_caller)]
     pub const fn from_slice(slice: &[T]) -> Self {
         Self {
-            v: std::simd::Simd::from_slice(slice)
+            v: Simd::from_slice(slice)
         }
     }
    
