@@ -68,6 +68,13 @@ impl<T, const N: usize> Packet<T, N>
     pub const fn as_simd(&self) -> &Simd<T, N> {
         &self.v
     }
+    
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub const fn as_simd_mut(&mut self) -> &mut Simd<T, N> {
+        &mut self.v
+    }
+
 
     #[inline]
     #[cfg_attr(debug_assertions, track_caller)]
