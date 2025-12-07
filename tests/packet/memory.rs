@@ -13,6 +13,9 @@ fn bytes<T>(src: &T) -> &[u8] {
 
 #[test]
 fn memtest() {
+   
+    // Verifies byte-wise identity preservation from Simd. 
+
     macro_rules! memory {
         ($(($type:ty, $lanes:expr))*) => {
             $(
@@ -29,7 +32,6 @@ fn memtest() {
         (u8, 4)
         (u8, 8)
         (u8, 16)
-
         (u16, 2)
         (u16, 4)
         (u16, 8)
