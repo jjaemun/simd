@@ -1,4 +1,4 @@
-use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
+use std::simd::{Mask, Simd, SimdElement, LaneCount, SupportedLaneCount};
 
 #[repr(transparent)]
 pub struct Packet<T, const N: usize> 
@@ -97,7 +97,166 @@ impl<T, const N: usize> Packet<T, N>
     pub fn copy_to_slice(self, slice: &mut [T]) {
         self.v.copy_to_slice(slice)
     }
-}
+    
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn load_select_ptr(
+        addr: *const T, 
+        enable: Mask<<T as SimdElement>::Mask, N>,
+        or: Self
+    ) -> Self {
+        unsafe {
+            Self {
+                v: Simd::load_select_ptr(addr, enable, or.v)
+            }
+        }
+    }
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn load_select_unchecked(
+        slice: &[T],
+        enable: Mask<<T as SimdElement>::Mask, N>,
+        or: Self,
+    ) -> Self {
+        let addr = slice.as_ptr();
+        unsafe {
+            Self {
+                v: Simd::load_select_unchecked(slice, enable, or.v)
+            }
+        }
+    }
+
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn load_select(        
+        slice: &[T],
+        enable: Mask<<T as SimdElement>::Mask, N>,
+        or: Self,
+    ) -> Self {
+        Self {
+            v: Simd::load_select(slice, enable, or.v)
+        }
+    }
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn load_select_or_default(slice: &[T], enable: Mask<<T as SimdElement>::Mask, N>) -> Self 
+    where 
+        T: Default,
+    {
+        Self {
+            v: Simd::load_select(slice, enable, Default::default())
+        }
+    }
+
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn load_or(slice: &[T], or: Self) -> Self {
+        Self {
+            v: Simd::load_or(slice, or.v)
+        }
+    }
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn load_or_default(slice: &[T]) -> Self 
+    where 
+        T: Default,
+    {
+        Self {
+            v: Simd::load_or_default(slice)
+        }
+    }
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub unsafe fn gather_select_ptr(
+        src: Packet<*const T, N>,
+        enable: Mask<isize, N>,
+        or: Self,
+    ) -> Self {
+        unsafe {
+            Self {
+                v: Simd::gather_select_ptr(src.v, enable, or.v)
+            }
+        }
+    }
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub unsafe fn gather_ptr(src: Packet<*const T, N>) -> Self 
+    where 
+        T: Default,
+    {
+        unsafe {
+            Self {
+                v: Simd::gather_ptr(src.v)
+            }
+        }
+    }
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub unsafe fn gather_select_unchecked(
+        slice: &[T],
+        enable: Mask<isize, N>,
+        idxs: Packet<usize, N>,
+        or: Self
+    ) -> Self {
+        unsafe {
+            Self {
+                v: Simd::gather_select_unchecked(slice, enable, idxs.v, or.v)
+            }
+        }
+    }
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn gather_select(
+        slice: &[T],
+        enable: Mask<isize, N>,
+        idxs: Packet<usize, N>,
+        or: Self
+    ) -> Self {
+        Self {
+            v: Simd::gather_select(slice, enable, idxs.v, or.v)
+        }
+    }
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn gather_or_default(slice: &[T], idxs: Packet<usize, N>) -> Self 
+    where
+        T: Default
+    {
+        Self {
+            v: Simd::gather_or_default(slice, idxs.v)
+        }
+    }
+
+    #[must_use]
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn gather_or(slice: &[T], idxs: Packet<usize, N>, or: Self) -> Self {
+        Self {
+            v: Simd::gather_or(slice, idxs.v, or.v)
+        }
+    }
+} 
 
 
 impl<T, const N: usize> Copy for Packet<T, N> 
