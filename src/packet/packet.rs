@@ -121,7 +121,6 @@ impl<T, const N: usize> Packet<T, N>
         enable: Mask<<T as SimdElement>::Mask, N>,
         or: Self,
     ) -> Self {
-        let addr = slice.as_ptr();
         unsafe {
             Self {
                 v: Simd::load_select_unchecked(slice, enable, or.v)
@@ -255,6 +254,25 @@ impl<T, const N: usize> Packet<T, N>
         Self {
             v: Simd::gather_or(slice, idxs.v, or.v)
         }
+    }
+
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn store_select(self, slice: &mut [T], enable: Mask<<T as SimdElement>::Mask, N>) {
+        self.v.store_select(slice, enable)
+    }
+
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub unsafe fn store_select_unchecked(self, slice: &mut [T], enable: Mask<<T as SimdElement>::Mask, N>) {
+        unsafe { self.v.store_select_unchecked(slice, enable) }
+    }
+
+
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub unsafe fn store_select_ptr(self, addr: *mut T, enable: Mask<<T as SimdElement>::Mask, N>) {
+        unsafe { self.v.store_select_ptr(addr, enable) }
     }
 } 
 
