@@ -274,6 +274,36 @@ impl<T, const N: usize> Packet<T, N>
     pub unsafe fn store_select_ptr(self, addr: *mut T, enable: Mask<<T as SimdElement>::Mask, N>) {
         unsafe { self.v.store_select_ptr(addr, enable) }
     }
+
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn scatter(self, slice: &mut [T], idxs: Packet<usize, N>) {
+        self.v.scatter(slice, idxs.v)
+    }
+
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub fn scatter_select(self, slice: &mut [T], enable: Mask<isize, N>, idxs: Packet<usize, N>) {
+        self.v.scatter_select(slice, enable, idxs.v)
+    }
+
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub unsafe fn scatter_select_unchecked(self, slice: &mut [T], enable: Mask<isize, N>, idxs: Packet<usize, N>) {
+        unsafe { self.v.scatter_select_unchecked(slice, enable, idxs.v) }
+    }
+
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub unsafe fn scatter_ptr(self, dst: Packet<*mut T, N>) {
+        unsafe { self.v.scatter_ptr(dst.v) }
+    }
+
+    #[inline]
+    #[cfg_attr(debug_assertions, track_caller)]
+    pub unsafe fn scatter_select_ptr(self, dst: Packet<*mut T, N>, enable: Mask<isize, N>) {
+        unsafe { self.v.scatter_select_ptr(dst.v, enable) }
+    }
 } 
 
 
