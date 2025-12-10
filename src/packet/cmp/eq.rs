@@ -9,9 +9,9 @@ where
     Simd<T, N>: PartialEq,
 {
     // Rust's operator overloading constrains equality
-    // comparisons to return a pure bool type. In this
-    // They are included for completeness but are very 
-    // uninteresting in the sense of simd operations.
+    // comparisons to pure bool return types. They are 
+    // included for completeness but are uninteresting
+    // in the sense of simd operations.
 
     #[inline]
     fn eq(&self, other: &Self) -> bool {
