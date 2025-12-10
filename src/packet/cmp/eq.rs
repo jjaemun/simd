@@ -35,7 +35,7 @@ where
 
 pub trait PacketPartialEq {
 
-    // Mask returning equality comparisons. 
+    // Mask returning equality comparisons.
 
     type Mask;
 
@@ -53,6 +53,17 @@ where
     LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: SimdPartialEq,
 {
+
+    // Similar to assign ops, making PacketPartialEq
+    // fully generic over T, bounded on
+    
+    //          [Simd<T, N>: SimdPartialEq]
+    
+    // already propagates to implementations of all
+    // SimdPartialEq types available. That is, ptr
+    // (const and mut) cases are covered and neatly 
+    // managed implicitly by rust's type system. 
+    
     type Mask = <Simd<T, N> as SimdPartialEq>::Mask;
 
     #[inline]
@@ -65,11 +76,3 @@ where
         self.v.simd_ne(other.v)
     }
 }
-
-
-
-
-
-
-
-
