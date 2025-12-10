@@ -8,11 +8,10 @@ where
     LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: PartialEq,
 {
-    // Clearly, rust's operator overloading restricts
-    // equality comparisons to those returning a pure
-    // bool type. In this case, they are included for
-    // completeness but are very uninteresting in the
-    // sense of vectorised operations.
+    // Rust's operator overloading constrains equality
+    // comparisons to return a pure bool type. In this
+    // They are included for completeness but are very 
+    // uninteresting in the sense of simd operations.
 
     #[inline]
     fn eq(&self, other: &Self) -> bool {
