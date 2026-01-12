@@ -71,7 +71,7 @@ macro_rules! rhs {
     };
 }
 
-macro_rules! both {
+macro_rules! all {
     (impl<T, const N: usize> $trait:ident for $packet:ty {
             fn $call:ident
         }) => {
@@ -109,7 +109,7 @@ macro_rules! derefs {
             }
         }
     
-        both! {
+        all! {
             impl<T, const N: usize> $trait for $packet {
                 fn $call
             }
