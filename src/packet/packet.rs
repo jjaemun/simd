@@ -1,10 +1,9 @@
-use std::simd::{Mask, Simd, SimdElement, LaneCount, SupportedLaneCount};
+use std::simd::{Mask, Simd, SimdElement};
 
 #[repr(transparent)]
 pub struct Packet<T, const N: usize> 
     where
         T: SimdElement,
-        LaneCount<N>: SupportedLaneCount,
 {
     pub v: Simd<T, N>,
 }
@@ -12,7 +11,6 @@ pub struct Packet<T, const N: usize>
 impl<T, const N: usize> Packet<T, N> 
     where
         T: SimdElement,
-        LaneCount<N>: SupportedLaneCount,
 {
     pub const LEN: usize = N;
 
@@ -310,13 +308,11 @@ impl<T, const N: usize> Packet<T, N>
 impl<T, const N: usize> Copy for Packet<T, N> 
 where 
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {}
 
 impl<T, const N: usize> Clone for Packet<T, N> 
 where 
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn clone(&self) -> Self {
@@ -327,7 +323,6 @@ where
 impl<T, const N: usize> Default for Packet<T, N> 
 where 
     T: SimdElement + Default,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn default() -> Self {
@@ -338,7 +333,6 @@ where
 impl<T, const N: usize> AsRef<[T; N]> for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn as_ref(&self) -> &[T; N] {
@@ -349,7 +343,6 @@ where
 impl<T, const N: usize> AsMut<[T; N]> for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn as_mut(&mut self) -> &mut [T; N] {
@@ -360,7 +353,6 @@ where
 impl<T, const N: usize> AsRef<[T]> for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn as_ref(&self) -> &[T] {
@@ -371,7 +363,6 @@ where
 impl<T, const N: usize> AsMut<[T]> for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn as_mut(&mut self) -> &mut [T] {
@@ -382,7 +373,6 @@ where
 impl<T, const N: usize> From<[T; N]> for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn from(array: [T; N]) -> Self {
@@ -393,7 +383,6 @@ where
 impl<T, const N: usize> From<Simd<T, N>> for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn from(simd: Simd<T, N>) -> Self {
@@ -404,7 +393,6 @@ where
 impl<T, const N: usize> From<Packet<T, N>> for [T; N]
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn from(packet: Packet<T, N>) -> Self {
@@ -415,7 +403,6 @@ where
 impl<T, const N: usize> From<Packet<T, N>> for Simd<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn from(packet: Packet<T, N>) -> Self {
@@ -426,7 +413,6 @@ where
 impl<T, const N: usize> TryFrom<&[T]> for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Error = core::array::TryFromSliceError;
 
@@ -439,7 +425,6 @@ where
 impl<T, const N: usize> TryFrom<&mut [T]> for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Error = core::array::TryFromSliceError;
 

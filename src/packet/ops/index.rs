@@ -1,11 +1,10 @@
-use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
+use std::simd::{Simd, SimdElement};
 
 use crate::packet::Packet;
 
 impl<I, T, const N: usize> std::ops::Index<I> for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
     I: std::slice::SliceIndex<[T]>,
 {
     type Output = I::Output;
@@ -19,7 +18,6 @@ where
 impl<I, T, const N: usize> std::ops::IndexMut<I> for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
     I: std::slice::SliceIndex<[T]>,
 {
     #[inline]

@@ -1,11 +1,10 @@
-use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
+use std::simd::{Simd, SimdElement};
 use std::hash::{Hash};
 use crate::packet::Packet;
 
 impl<T, const N: usize> Hash for Packet<T, N>
 where
     T: SimdElement + Hash,
-    LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: Hash,
 {
     #[inline]

@@ -1,6 +1,6 @@
 use std::ops::{AddAssign, SubAssign, MulAssign, DivAssign, RemAssign, BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign, ShrAssign}; 
 use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor, Shl, Shr}; 
-use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
+use std::simd::{Simd, SimdElement};
 
 use crate::packet::Packet;
 
@@ -17,7 +17,6 @@ macro_rules! assign {
         $(impl<T, U, const N: usize> $assign<U> for Packet<T, N>
         where
             T: SimdElement,
-            LaneCount<N>: SupportedLaneCount,
             Packet<T, N>: $trait<U, Output = Packet<T, N>>,
         {
             #[inline]

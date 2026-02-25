@@ -1,11 +1,10 @@
-use std::simd::{Mask, prelude::SimdPartialEq, Simd, SimdElement, LaneCount, SupportedLaneCount};
+use std::simd::{Mask, prelude::SimdPartialEq, Simd, SimdElement};
 use crate::packet::Packet;
 
 
 impl<T, const N: usize> PartialEq for Packet<T, N>
 where
     T: SimdElement + PartialEq,
-    LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: PartialEq,
 {
     // Rust's operator overloading constrains equality
@@ -28,7 +27,6 @@ where
 impl<T, const N: usize> Eq for Packet<T, N>
 where
     T: SimdElement + Eq,
-    LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: Eq,
 {}
 
@@ -50,7 +48,6 @@ pub trait PacketPartialEq {
 impl<T, const N: usize> PacketPartialEq for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: SimdPartialEq,
 {
 

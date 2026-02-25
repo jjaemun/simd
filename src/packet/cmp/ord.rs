@@ -1,11 +1,10 @@
-use std::simd::{Mask, Simd, SimdElement, prelude::SimdPartialOrd, prelude::SimdOrd, LaneCount, SupportedLaneCount};
+use std::simd::{Mask, Simd, SimdElement, prelude::SimdPartialOrd, prelude::SimdOrd};
 use crate::packet::{Packet, cmp::PacketPartialEq};
 
 
 impl<T, const N: usize> PartialOrd for Packet<T, N>
 where
     T: SimdElement + PartialOrd,
-    LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: PartialOrd,
 {
     #[inline]
@@ -17,7 +16,6 @@ where
 impl<T, const N: usize> Ord for Packet<T, N>
 where
     T: SimdElement + Ord,
-    LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: Ord,
 {
     #[inline]
@@ -63,7 +61,6 @@ pub trait PacketOrd: PacketPartialOrd {
 impl<T, const N: usize> PacketPartialOrd for Packet<T, N>
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: SimdPartialOrd,
 {
     #[inline]
@@ -91,7 +88,6 @@ where
 impl<T, const N: usize> PacketOrd for Packet<T, N> 
 where
     T: SimdElement,
-    LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: SimdOrd,
 {
     #[inline] 

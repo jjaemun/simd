@@ -1,5 +1,5 @@
 use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor, Shl, Shr}; 
-use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
+use std::simd::{Simd, SimdElement};
 
 use crate::packet::Packet;
 
@@ -11,7 +11,6 @@ macro_rules! lhs {
         impl<T, const N: usize> $trait<$packet> for &$packet
         where
             T: SimdElement,
-            LaneCount<N>: SupportedLaneCount,
             Simd<T, N>: $trait<Simd<T, N>, Output = Simd<T, N>>,
         {
             type Output = Packet<T, N>;
@@ -33,7 +32,6 @@ macro_rules! rhs {
         impl<T, const N: usize> $trait<&$packet> for $packet
         where
             T: SimdElement,
-            LaneCount<N>: SupportedLaneCount,
             Simd<T, N>: $trait<Simd<T, N>, Output = Simd<T, N>>,
         {
             type Output = Packet<T, N>;
@@ -55,7 +53,6 @@ macro_rules! all {
         impl<'a, 'b, T, const N: usize> $trait<&'b $packet> for &'a $packet
         where
             T: SimdElement,
-            LaneCount<N>: SupportedLaneCount,
             Simd<T, N>: $trait<Simd<T, N>, Output = Simd<T, N>>,
         {
             type Output = Packet<T, N>;

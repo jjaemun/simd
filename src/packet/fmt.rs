@@ -1,4 +1,4 @@
-use std::simd::{Simd, SimdElement, LaneCount, SupportedLaneCount};
+use std::simd::{Simd, SimdElement};
 use std::fmt;
 use crate::packet::Packet;
 
@@ -6,7 +6,6 @@ use crate::packet::Packet;
 impl<T, const N: usize> fmt::Debug for Packet<T, N> 
 where 
     T: SimdElement + fmt::Debug,
-    LaneCount<N>: SupportedLaneCount,
     Simd<T, N>: fmt::Debug,
 {
     #[inline]
