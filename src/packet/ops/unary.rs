@@ -1,7 +1,6 @@
 use crate::packet::Packet;
-use std::simd::{Simd, SimdElement};
 use std::ops::{Neg, Not};
-
+use std::simd::{Simd, SimdElement};
 
 impl<T, const N: usize> Neg for Packet<T, N>
 where
@@ -11,13 +10,10 @@ where
     type Output = Self;
 
     #[inline]
-    fn neg(self) -> Self::Output  {
-        Self {
-            v: -self.v,
-        }
+    fn neg(self) -> Self::Output {
+        Self { v: -self.v }
     }
 }
-
 
 impl<T, const N: usize> Not for Packet<T, N>
 where
@@ -27,9 +23,7 @@ where
     type Output = Self;
 
     #[inline]
-    fn not(self) -> Self::Output  {
-        Self {
-            v: !self.v,
-        }
+    fn not(self) -> Self::Output {
+        Self { v: !self.v }
     }
 }

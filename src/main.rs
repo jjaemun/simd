@@ -1,10 +1,9 @@
 #![feature(portable_simd)]
 
-use simd::packet::{*};
-use simd::packet::cmp::{*};
-use simd::packet::ops::{*};
+use simd::packet::cmp::*;
+use simd::packet::ops::*;
+use simd::packet::*;
 use std::ops::Mul;
-
 
 fn main() {
     let a = Packet4::<f32>::from_array([1.0, 2.0, 3.0, 4.0]);
@@ -14,7 +13,7 @@ fn main() {
     let d = -c;
     let e = -a + b;
     let f = -a + b;
-    
+
     println!("a = {:?}", a);
     println!("b = {:?}", b);
     println!("c = {:?}", c);
@@ -41,7 +40,5 @@ fn main() {
     let hi = Packet8::<i32>::from_array([10, 4, 4, 5, 6, 5, 6, 6]);
     let lo = Packet8::<i32>::from_array([4, 0, 0, 0, 0, 0, 0, 0]);
 
-    println!("clamp(g, lo, hi) = {:?}", simd::PacketOrd::clamp(g,lo, hi));
+    println!("clamp(g, lo, hi) = {:?}", simd::PacketOrd::clamp(g, lo, hi));
 }
-
-

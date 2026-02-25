@@ -25,4 +25,3 @@ where
         &mut self.v.as_mut_array()[index]
     }
 }
-

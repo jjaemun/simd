@@ -1,10 +1,9 @@
-use std::simd::{Simd, SimdElement};
-use std::fmt;
 use crate::packet::Packet;
+use std::fmt;
+use std::simd::{Simd, SimdElement};
 
-
-impl<T, const N: usize> fmt::Debug for Packet<T, N> 
-where 
+impl<T, const N: usize> fmt::Debug for Packet<T, N>
+where
     T: SimdElement + fmt::Debug,
     Simd<T, N>: fmt::Debug,
 {

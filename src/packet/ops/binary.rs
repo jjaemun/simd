@@ -1,8 +1,7 @@
-use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor, Shl, Shr}; 
+use std::ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Rem, Shl, Shr, Sub};
 use std::simd::{Simd, SimdElement};
 
 use crate::packet::Packet;
-
 
 macro_rules! binary {
     ($(impl<T, const N: usize> $trait:ident for $packet:ty {
@@ -10,23 +9,22 @@ macro_rules! binary {
         })*) => {
         $(
             impl<T, const N: usize> $trait<Self> for Packet<T, N>
-            where 
+            where
                 T: SimdElement,
                 Simd<T, N>: $trait<Output = Simd<T, N>>,
             {
                 type Output = Packet<T, N>;
-            
+
                 #[inline]
                 fn $call(self, rhs: Packet<T, N>) -> Self::Output {
                     Packet {
-                        v: self.v.$call(rhs.v) 
+                        v: self.v.$call(rhs.v)
                     }
                 }
             }
         )*
     };
 }
-      
 
 binary! {
     impl<T, const N: usize> Add for Packet<T, N> {

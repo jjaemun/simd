@@ -1,6 +1,5 @@
-use std::simd::{Mask, prelude::SimdPartialEq, Simd, SimdElement};
 use crate::packet::Packet;
-
+use std::simd::{Mask, Simd, SimdElement, prelude::SimdPartialEq};
 
 impl<T, const N: usize> PartialEq for Packet<T, N>
 where
@@ -8,7 +7,7 @@ where
     Simd<T, N>: PartialEq,
 {
     // Rust's operator overloading constrains equality
-    // comparisons to pure bool return types. They are 
+    // comparisons to pure bool return types. They are
     // included for completeness but are uninteresting
     // in the sense of simd operations.
 
@@ -28,11 +27,10 @@ impl<T, const N: usize> Eq for Packet<T, N>
 where
     T: SimdElement + Eq,
     Simd<T, N>: Eq,
-{}
-
+{
+}
 
 pub trait PacketPartialEq {
-
     // Mask returning equality comparisons.
 
     type Mask;
@@ -44,23 +42,21 @@ pub trait PacketPartialEq {
     fn cmpne(self, other: Self) -> Self::Mask;
 }
 
-
 impl<T, const N: usize> PacketPartialEq for Packet<T, N>
 where
     T: SimdElement,
     Simd<T, N>: SimdPartialEq,
 {
-
     // Similar to assign ops, making PacketPartialEq
     // fully generic over T, bounded on
-    
+
     //          [Simd<T, N>: SimdPartialEq]
-    
+
     // already propagates to implementations of all
     // SimdPartialEq types available. That is, ptr
-    // (const and mut) cases are covered and neatly 
-    // managed implicitly by rust's type system. 
-    
+    // (const and mut) cases are covered and neatly
+    // managed implicitly by rust's type system.
+
     type Mask = <Simd<T, N> as SimdPartialEq>::Mask;
 
     #[inline]

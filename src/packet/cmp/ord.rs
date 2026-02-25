@@ -1,6 +1,5 @@
-use std::simd::{Mask, Simd, SimdElement, prelude::SimdPartialOrd, prelude::SimdOrd};
 use crate::packet::{Packet, cmp::PacketPartialEq};
-
+use std::simd::{Mask, Simd, SimdElement, prelude::SimdOrd, prelude::SimdPartialOrd};
 
 impl<T, const N: usize> PartialOrd for Packet<T, N>
 where
@@ -24,8 +23,7 @@ where
     }
 }
 
-pub trait PacketPartialOrd: PacketPartialEq{
-
+pub trait PacketPartialOrd: PacketPartialEq {
     // Mask returning comparisons.
 
     #[must_use]
@@ -42,10 +40,9 @@ pub trait PacketPartialOrd: PacketPartialEq{
 }
 
 pub trait PacketOrd: PacketPartialOrd {
-
     // Full order implies the existence of
     // max and min.
-    
+
     #[must_use]
     fn max(self, other: Self) -> Self;
 
@@ -55,8 +52,6 @@ pub trait PacketOrd: PacketPartialOrd {
     #[must_use]
     fn clamp(self, min: Self, max: Self) -> Self;
 }
-
-
 
 impl<T, const N: usize> PacketPartialOrd for Packet<T, N>
 where
@@ -84,21 +79,20 @@ where
     }
 }
 
-
-impl<T, const N: usize> PacketOrd for Packet<T, N> 
+impl<T, const N: usize> PacketOrd for Packet<T, N>
 where
     T: SimdElement,
     Simd<T, N>: SimdOrd,
 {
-    #[inline] 
-    fn  min(self, other: Self) -> Self {
+    #[inline]
+    fn min(self, other: Self) -> Self {
         Self {
             v: self.v.simd_min(other.v),
         }
     }
 
-    #[inline] 
-    fn  max(self, other: Self) -> Self {
+    #[inline]
+    fn max(self, other: Self) -> Self {
         Self {
             v: self.v.simd_max(other.v),
         }
@@ -112,4 +106,3 @@ where
         }
     }
 }
-

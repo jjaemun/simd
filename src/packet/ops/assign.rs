@@ -1,9 +1,11 @@
-use std::ops::{AddAssign, SubAssign, MulAssign, DivAssign, RemAssign, BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign, ShrAssign}; 
-use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor, Shl, Shr}; 
+use std::ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Rem, Shl, Shr, Sub};
+use std::ops::{
+    AddAssign, BitAndAssign, BitOrAssign, BitXorAssign, DivAssign, MulAssign, RemAssign, ShlAssign,
+    ShrAssign, SubAssign,
+};
 use std::simd::{Simd, SimdElement};
 
 use crate::packet::Packet;
-
 
 macro_rules! assign {
         ($(impl<T, U, const N: usize> $assign:ident<U> for Packet<T, N>
