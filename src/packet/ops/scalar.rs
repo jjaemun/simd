@@ -325,8 +325,72 @@ macro_rules! ops {
 }
 
 
+macro_rules! ops {
+    (impl<const N: usize> Ops<$packet:ty> for $T:ty {
+        $(
+            impl $trait:ident {
+                fn $call:ident 
+            })*
+        }) => {
+        $(
+            impl<const N: usize> $trait<$packet> for $T
+            where
+                $T: SimdElement,
+                Simd<$T, N>: $trait<Simd<$T, N>, Output = Simd<$T, N>>,
+            {
+                type Output = $packet;
+
+                #[inline]
+                fn $call(self, rhs: $packet) -> Self::Output {
+                    Packet {
+                        v: Packet::<$T, N>::splat(self).v.$call(rhs.v)
+                    }
+                }
+            }
+        )*
+    };
+}
+
 ops! {
-    impl<const N: usize> Ops for u32 {
-        into Packet<f32, N>
+    impl<const N: usize> Ops<Packet<u32, N>> for u32 {
+        impl Add  {
+            fn add
+        }
+
+        impl Mul {
+            fn mul
+        }
+
+        impl Sub {
+            fn sub
+        }
+
+        impl Div {
+            fn div
+        }
+
+        impl Rem {
+            fn rem
+        }
+
+        impl BitAnd {
+            fn bitand
+        }
+    
+        impl BitOr {
+            fn bitor
+        }
+
+        impl BitXor {
+            fn bitxor
+        }
+
+        impl Shl {
+            fn shl
+        }
+
+        impl Shr {
+            fn shr
+        }
     }
 }
