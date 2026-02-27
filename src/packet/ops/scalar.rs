@@ -178,7 +178,7 @@ scalar! {
 
 
 macro_rules! ops {
-    (impl<const N: usize Ops for $T:ty {
+    (impl<const N: usize> Ops for $T:ty {
             into $packet:ty
         }) => {
         impl<const N: usize> Add<Packet<$T, N>> for $T
@@ -217,7 +217,7 @@ macro_rules! ops {
         {
             type Output = Packet<$T, N>;
                 
-            fn sub(self, rhs: Packet<$T, N>) -> Self::output {
+            fn sub(self, rhs: Packet<$T, N>) -> Self::Output {
                 Packet {
                     v: Packet::<$T, N>::splat(self).v.sub(rhs.v)
                 }
@@ -231,7 +231,7 @@ macro_rules! ops {
         {
             type Output = Packet<$T, N>;
                 
-            fn div(self, rhs: Packet<$T, N>) -> Self::output {
+            fn div(self, rhs: Packet<$T, N>) -> Self::Output {
                 Packet {
                     v: Packet::<$T, N>::splat(self).v.div(rhs.v)
                 }
@@ -245,7 +245,7 @@ macro_rules! ops {
         {
             type Output = Packet<$T, N>;
                 
-            fn rem(self, rhs: Packet<$T, N>) -> Self::output {
+            fn rem(self, rhs: Packet<$T, N>) -> Self::Output {
                 Packet {
                     v: Packet::<$T, N>::splat(self).v.rem(rhs.v)
                 }
@@ -259,7 +259,7 @@ macro_rules! ops {
         {
             type Output = Packet<$T, N>;
                 
-            fn bitand(self, rhs: Packet<$T, N>) -> Self::output {
+            fn bitand(self, rhs: Packet<$T, N>) -> Self::Output {
                 Packet {
                     v: Packet::<$T, N>::splat(self).v.bitand(rhs.v)
                 }
@@ -273,7 +273,7 @@ macro_rules! ops {
         {
             type Output = Packet<$T, N>;
                 
-            fn bitor(self, rhs: Packet<$T, N>) -> Self::output {
+            fn bitor(self, rhs: Packet<$T, N>) -> Self::Output {
                 Packet {
                     v: Packet::<$T, N>::splat(self).v.bitor(rhs.v)
                 }
@@ -287,9 +287,9 @@ macro_rules! ops {
         {
             type Output = Packet<$T, N>;
                 
-            fn bitxor(self, rhs: Packet<$T, N>) -> Self::output {
+            fn bitxor(self, rhs: Packet<$T, N>) -> Self::Output {
                 Packet {
-                    v: Packet::<$T, N>::splat(self).v.bixor(rhs.v)
+                    v: Packet::<$T, N>::splat(self).v.bitxor(rhs.v)
                 }
             }
         }
@@ -301,7 +301,7 @@ macro_rules! ops {
         {
             type Output = Packet<$T, N>;
                 
-            fn shl(self, rhs: Packet<$T, N>) -> Self::output {
+            fn shl(self, rhs: Packet<$T, N>) -> Self::Output {
                 Packet {
                     v: Packet::<$T, N>::splat(self).v.shl(rhs.v)
                 }
@@ -315,11 +315,18 @@ macro_rules! ops {
         {
             type Output = Packet<$T, N>;
                 
-            fn shr(self, rhs: Packet<$T, N>) -> Self::output {
+            fn shr(self, rhs: Packet<$T, N>) -> Self::Output {
                 Packet {
                     v: Packet::<$T, N>::splat(self).v.shr(rhs.v)
                 }
             }
         }
     };
+}
+
+
+ops! {
+    impl<const N: usize> Ops for u32 {
+        into Packet<f32, N>
+    }
 }
