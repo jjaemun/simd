@@ -175,3 +175,151 @@ scalar! {
         fn shr
     }
 }
+
+
+macro_rules! ops {
+    (impl<const N: usize Ops for $T:ty {
+            into $packet:ty
+        }) => {
+        impl<const N: usize> Add<Packet<$T, N>> for $T
+        where
+            $T: SimdElement,
+            Simd<$T, N>: Add<Simd<$T, N>, Output = Simd<$T, N>>,
+        {
+            type Output = Packet<$T, N>;
+                
+            fn add(self, rhs: Packet<$T, N>) -> Self::Output {
+                Packet {
+                    v: Packet::<$T, N>::splat(self).v.add(rhs.v)
+                }
+            }
+        }
+
+        impl<const N: usize> Mul<Packet<$T, N>> for $T 
+        where 
+            $T: SimdElement,
+            Simd<$T, N>: Mul<Simd<$T, N>, Output = Simd<$T, N>>,
+        {
+            type Output = Packet<$T, N>;
+
+            #[inline]
+            fn mul(self, rhs: Packet<$T, N>) -> Self::Output {
+                Packet {
+                    v: Packet::<$T, N>::splat(self).v.mul(rhs.v)
+                }
+            }
+        }
+
+        impl<const N: usize> Sub<Packet<$T, N>> for $T
+        where
+            $T: SimdElement,
+            Simd<$T, N>: Sub<Simd<$T, N>, Output = Simd<$T, N>>,
+        {
+            type Output = Packet<$T, N>;
+                
+            fn sub(self, rhs: Packet<$T, N>) -> Self::output {
+                Packet {
+                    v: Packet::<$T, N>::splat(self).v.sub(rhs.v)
+                }
+            }
+        }
+
+        impl<const N: usize> Div<Packet<$T, N>> for $T
+        where
+            $T: SimdElement,
+            Simd<$T, N>: Div<Simd<$T, N>, Output = Simd<$T, N>>,
+        {
+            type Output = Packet<$T, N>;
+                
+            fn div(self, rhs: Packet<$T, N>) -> Self::output {
+                Packet {
+                    v: Packet::<$T, N>::splat(self).v.div(rhs.v)
+                }
+            }
+        }
+
+        impl<const N: usize> Rem<Packet<$T, N>> for $T
+        where
+            $T: SimdElement,
+            Simd<$T, N>: Rem<Simd<$T, N>, Output = Simd<$T, N>>,
+        {
+            type Output = Packet<$T, N>;
+                
+            fn rem(self, rhs: Packet<$T, N>) -> Self::output {
+                Packet {
+                    v: Packet::<$T, N>::splat(self).v.rem(rhs.v)
+                }
+            }
+        }
+
+        impl<const N: usize> BitAnd<Packet<$T, N>> for $T
+        where
+            $T: SimdElement,
+            Simd<$T, N>: BitAnd<Simd<$T, N>, Output = Simd<$T, N>>,
+        {
+            type Output = Packet<$T, N>;
+                
+            fn bitand(self, rhs: Packet<$T, N>) -> Self::output {
+                Packet {
+                    v: Packet::<$T, N>::splat(self).v.bitand(rhs.v)
+                }
+            }
+        }
+        
+        impl<const N: usize> BitOr<Packet<$T, N>> for $T
+        where
+            $T: SimdElement,
+            Simd<$T, N>: BitOr<Simd<$T, N>, Output = Simd<$T, N>>,
+        {
+            type Output = Packet<$T, N>;
+                
+            fn bitor(self, rhs: Packet<$T, N>) -> Self::output {
+                Packet {
+                    v: Packet::<$T, N>::splat(self).v.bitor(rhs.v)
+                }
+            }
+        }
+        
+        impl<const N: usize> BitXor<Packet<$T, N>> for $T
+        where
+            $T: SimdElement,
+            Simd<$T, N>: BitXor<Simd<$T, N>, Output = Simd<$T, N>>,
+        {
+            type Output = Packet<$T, N>;
+                
+            fn bitxor(self, rhs: Packet<$T, N>) -> Self::output {
+                Packet {
+                    v: Packet::<$T, N>::splat(self).v.bixor(rhs.v)
+                }
+            }
+        }
+        
+        impl<const N: usize> Shl<Packet<$T, N>> for $T
+        where
+            $T: SimdElement,
+            Simd<$T, N>: Shl<Simd<$T, N>, Output = Simd<$T, N>>,
+        {
+            type Output = Packet<$T, N>;
+                
+            fn shl(self, rhs: Packet<$T, N>) -> Self::output {
+                Packet {
+                    v: Packet::<$T, N>::splat(self).v.shl(rhs.v)
+                }
+            }
+        }
+
+        impl<const N: usize> Shr<Packet<$T, N>> for $T
+        where
+            $T: SimdElement,
+            Simd<$T, N>: Shr<Simd<$T, N>, Output = Simd<$T, N>>,
+        {
+            type Output = Packet<$T, N>;
+                
+            fn shr(self, rhs: Packet<$T, N>) -> Self::output {
+                Packet {
+                    v: Packet::<$T, N>::splat(self).v.shr(rhs.v)
+                }
+            }
+        }
+    };
+}
