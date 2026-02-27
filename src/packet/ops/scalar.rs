@@ -177,7 +177,7 @@ scalar! {
 }
 
 
-macro_rules! ops {
+macro_rules! deprecated {
     (impl<const N: usize> Ops for $T:ty {
             into $packet:ty
         }) => {
@@ -326,12 +326,9 @@ macro_rules! ops {
 
 
 macro_rules! ops {
-    (impl<const N: usize> Ops<$packet:ty> for $T:ty {
-        $(
-            impl $trait:ident {
-                fn $call:ident 
-            })*
-        }) => {
+    ($(impl<const N: usize> $trait:ident<$packet:ty> for $T:ty {
+            fn $call:ident 
+        })*) => {
         $(
             impl<const N: usize> $trait<$packet> for $T
             where
@@ -351,46 +348,93 @@ macro_rules! ops {
     };
 }
 
-ops! {
-    impl<const N: usize> Ops<Packet<u32, N>> for u32 {
-        impl Add  {
-            fn add
-        }
 
-        impl Mul {
-            fn mul
-        }
+macro_rules! integral {
+    ($($T:ty)*) => {
+        $(
+            ops! {
+                impl<const N: usize> Add<Packet<$T, N>> for $T{
+                    fn add
+                }
 
-        impl Sub {
-            fn sub
-        }
+                impl<const N: usize> Mul<Packet<$T, N>> for $T {
+                    fn mul
+                }
 
-        impl Div {
-            fn div
-        }
+                impl<const N: usize> Sub<Packet<$T, N>> for $T {
+                    fn sub
+                }
 
-        impl Rem {
-            fn rem
-        }
+                impl<const N: usize> Div<Packet<$T, N>> for $T {
+                    fn div
+                }
 
-        impl BitAnd {
-            fn bitand
-        }
+                impl<const N: usize> Rem<Packet<$T, N>> for $T {
+                    fn rem
+                }
     
-        impl BitOr {
-            fn bitor
-        }
+                impl<const N: usize> BitAnd<Packet<$T, N>> for $T {
+                    fn bitand
+                }
 
-        impl BitXor {
-            fn bitxor
-        }
+                impl<const N: usize> BitOr<Packet<$T, N>> for $T {
+                    fn bitor
+                }
+    
+                impl<const N: usize> BitXor<Packet<$T, N>> for $T {
+                    fn bitxor
+                }
+    
+                impl<const N: usize> Shl<Packet<$T, N>> for $T {
+                    fn shl
+                }
 
-        impl Shl {
-            fn shl
-        }
-
-        impl Shr {
-            fn shr
-        }
+                impl<const N: usize> Shr<Packet<$T, N>> for $T {
+                    fn shr
+                }
+            }
+        )*
     }
+}
+
+integral! {
+    (u8)
+    (u16)
+    (u32)
+    (u64)
+    
+    (i8)
+    (i16)
+    (i32)
+    (i64)
+} 
+
+
+macro_rules! fp {
+    ($($T:ty)*) => {
+        $(
+            ops! {
+                impl<const N: usize> Add<Packet<$T, N>> for $T{
+                    fn add
+                }
+
+                impl<const N: usize> Mul<Packet<$T, N>> for $T {
+                    fn mul
+                }
+
+                impl<const N: usize> Sub<Packet<$T, N>> for $T {
+                    fn sub
+                }
+
+                impl<const N: usize> Div<Packet<$T, N>> for $T {
+                    fn div
+                }
+           }
+        )*
+    }
+}
+
+fp! {
+    (f32)
+    (f64)
 }
