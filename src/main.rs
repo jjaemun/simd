@@ -49,9 +49,13 @@ fn main() {
 
     let g = Packet8::<i32>::from_array([1, 2, 3, 4, 5, 6, 7, 8]);
     let h = Packet8::<i32>::from_array([8, 7, 6, 5, 4, 3, 2, 1]);
+    let p = Packet8::<u32>::from_array([8, 7, 6, 5, 4, 3, 2, 1]);
+
+    let q = 2 * p;
 
     println!("min(g, h) = {:?}", simd::PacketOrd::min(g, h));
     println!("max(g, h) = {:?}", simd::PacketOrd::max(g, h));
+    println!("q = {:?}", q);
 
     let hi = Packet8::<i32>::from_array([10, 4, 4, 5, 6, 5, 6, 6]);
     let lo = Packet8::<i32>::from_array([4, 0, 0, 0, 0, 0, 0, 0]);
