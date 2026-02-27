@@ -1,9 +1,24 @@
 #![feature(portable_simd)]
 
+use std::simd::{SimdElement};
+
 use simd::packet::cmp::*;
 use simd::packet::ops::*;
 use simd::packet::*;
 use std::ops::Mul;
+
+
+fn splat<T, const N: usize>(scalar: T) -> Packet<T, N> 
+where T: SimdElement,
+{
+    Packet::<T, N>::splat(scalar)
+}
+
+macro_rules! splat {
+    ($scalar:expr) => {
+        splat($scalar)
+    };
+}
 
 fn main() {
     let a = Packet4::<f32>::from_array([1.0, 2.0, 3.0, 4.0]);
@@ -12,14 +27,15 @@ fn main() {
     let c = a + b;
     let d = -c;
     let e = -a + b;
-    let f = -a + b;
+    let f = -a -b * 2.0f32;
+    let r = splat(2.0) + a * 3.0 - splat!(4.0) * b + (a - 1.0) * (b + 2.0) - (splat!(-3.0) + a * b) + 5.0;
 
     println!("a = {:?}", a);
     println!("b = {:?}", b);
-    println!("c = {:?}", c);
-    println!("d = {:?}", d);
-    println!("e = {:?}", e);
-    println!("f = {:?}", f);
+    println!("c = a + b = {:?}", c);
+    println!("d = -c = {:?}", d);
+    println!("e = -a + b = {:?}", e);
+    println!("f = -a - b = {:?}", f);
 
     println!("lane-wise operaitons -----------");
     println!("\n");
