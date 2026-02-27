@@ -177,7 +177,7 @@ scalar! {
 }
 
 
-macro_rules! ops {
+macro_rules! symmetry {
     ($(impl<const N: usize> $trait:ident<$packet:ty> for $T:ty {
             fn $call:ident 
         })*) => {
@@ -204,7 +204,7 @@ macro_rules! ops {
 macro_rules! integral {
     ($($T:ty)*) => {
         $(
-            ops! {
+            symmetry! {
                 impl<const N: usize> Add<Packet<$T, N>> for $T{
                     fn add
                 }
@@ -265,7 +265,7 @@ integral! {
 macro_rules! fp {
     ($($T:ty)*) => {
         $(
-            ops! {
+            symmetry! {
                 impl<const N: usize> Add<Packet<$T, N>> for $T{
                     fn add
                 }
