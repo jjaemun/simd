@@ -16,16 +16,18 @@ macro_rules! assign {
                 $call:ident
             }
         })*) => {
-        $(impl<T, U, const N: usize> $assign<U> for Packet<T, N>
-        where
-            T: SimdElement,
-            Packet<T, N>: $trait<U, Output = Packet<T, N>>,
-        {
-            #[inline]
-            fn $assign_call(&mut self, rhs: U) {
-                *self = (*self).$call(rhs);
+        $(
+            impl<T, U, const N: usize> $assign<U> for Packet<T, N>
+            where
+                T: SimdElement,
+                Packet<T, N>: $trait<U, Output = Packet<T, N>>,
+            {
+                #[inline]
+                fn $assign_call(&mut self, rhs: U) {
+                    *self = (*self).$call(rhs);
+                }
             }
-        })*
+        )*
     }
 }
 
