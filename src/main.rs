@@ -27,8 +27,11 @@ fn main() {
     let c = a + b;
     let d = -c;
     let e = -a + b;
-    let f = -a -b * 2.0f32;
+    let mut f = -a -b * 2.0f32;
+    let ff = f;
+    f += 2.0;
     let r = splat(2.0) + a * 3.0 - splat!(4.0) * b + (a - 1.0) * (b + 2.0) - (splat!(-3.0) + a * b) + 5.0;
+    let rr = (2.0) + a * 3.0 - (4.0) * b + (a - 1.0) * (b + 2.0) - ((-3.0) + a * b) + 5.0;
 
     println!("a = {:?}", a);
     println!("b = {:?}", b);
@@ -36,6 +39,9 @@ fn main() {
     println!("d = -c = {:?}", d);
     println!("e = -a + b = {:?}", e);
     println!("f = -a - b = {:?}", f);
+    println!("ff = {:?}", ff);
+    println!("r = {:?}", r);
+    println!("rr = {:?}", rr);
 
     println!("lane-wise operaitons -----------");
     println!("\n");
@@ -49,9 +55,15 @@ fn main() {
 
     let g = Packet8::<i32>::from_array([1, 2, 3, 4, 5, 6, 7, 8]);
     let h = Packet8::<i32>::from_array([8, 7, 6, 5, 4, 3, 2, 1]);
+    let p = Packet8::<u32>::from_array([8, 7, 6, 5, 4, 3, 2, 1]);
+
+    let q = 2 * p;
+    let w = 2 / p;
 
     println!("min(g, h) = {:?}", simd::PacketOrd::min(g, h));
     println!("max(g, h) = {:?}", simd::PacketOrd::max(g, h));
+    println!("q = {:?}", q);
+    println!("w = {:?}", w);
 
     let hi = Packet8::<i32>::from_array([10, 4, 4, 5, 6, 5, 6, 6]);
     let lo = Packet8::<i32>::from_array([4, 0, 0, 0, 0, 0, 0, 0]);

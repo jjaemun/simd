@@ -175,3 +175,118 @@ scalar! {
         fn shr
     }
 }
+
+
+macro_rules! symmetry {
+    ($(impl<const N: usize> $trait:ident<$packet:ty> for $T:ty {
+            fn $call:ident 
+        })*) => {
+        $(
+            impl<const N: usize> $trait<$packet> for $T
+            where
+                $T: SimdElement,
+                Simd<$T, N>: $trait<Simd<$T, N>, Output = Simd<$T, N>>,
+            {
+                type Output = $packet;
+
+                #[inline]
+                fn $call(self, rhs: $packet) -> Self::Output {
+                    Packet {
+                        v: Packet::<$T, N>::splat(self).v.$call(rhs.v)
+                    }
+                }
+            }
+        )*
+    };
+}
+
+
+macro_rules! integral {
+    ($($T:ty)*) => {
+        $(
+            symmetry! {
+                impl<const N: usize> Add<Packet<$T, N>> for $T{
+                    fn add
+                }
+
+                impl<const N: usize> Mul<Packet<$T, N>> for $T {
+                    fn mul
+                }
+
+                impl<const N: usize> Sub<Packet<$T, N>> for $T {
+                    fn sub
+                }
+
+                impl<const N: usize> Div<Packet<$T, N>> for $T {
+                    fn div
+                }
+
+                impl<const N: usize> Rem<Packet<$T, N>> for $T {
+                    fn rem
+                }
+    
+                impl<const N: usize> BitAnd<Packet<$T, N>> for $T {
+                    fn bitand
+                }
+
+                impl<const N: usize> BitOr<Packet<$T, N>> for $T {
+                    fn bitor
+                }
+    
+                impl<const N: usize> BitXor<Packet<$T, N>> for $T {
+                    fn bitxor
+                }
+    
+                impl<const N: usize> Shl<Packet<$T, N>> for $T {
+                    fn shl
+                }
+
+                impl<const N: usize> Shr<Packet<$T, N>> for $T {
+                    fn shr
+                }
+            }
+        )*
+    }
+}
+
+integral! {
+    (u8)
+    (u16)
+    (u32)
+    (u64)
+    
+    (i8)
+    (i16)
+    (i32)
+    (i64)
+} 
+
+
+macro_rules! fp {
+    ($($T:ty)*) => {
+        $(
+            symmetry! {
+                impl<const N: usize> Add<Packet<$T, N>> for $T{
+                    fn add
+                }
+
+                impl<const N: usize> Mul<Packet<$T, N>> for $T {
+                    fn mul
+                }
+
+                impl<const N: usize> Sub<Packet<$T, N>> for $T {
+                    fn sub
+                }
+
+                impl<const N: usize> Div<Packet<$T, N>> for $T {
+                    fn div
+                }
+           }
+        )*
+    }
+}
+
+fp! {
+    (f32)
+    (f64)
+}
