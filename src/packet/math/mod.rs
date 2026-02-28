@@ -1,3 +1,5 @@
-pub mod approximations;
+pub mod approximation;
+pub mod utilities;
 
-pub use approximations::*;
+pub use approximation::*;
+pub use utilities::*;
